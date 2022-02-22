@@ -3,38 +3,7 @@ import { ALL_ASSETS } from "../model/JarsAndFarms";
 import { PickleAsset } from "../model/PickleModelJson";
 import path from "path";
 import { DocsFormat } from "..";
-import { AssetDocumentationResult } from "./DocsManager";
-
-export interface DocumentationModelDefinition {
-  [key: string]: AssetDocumentationDefinition;
-}
-
-export interface AssetDocumentationDefinition {
-  apiKey: string;
-  // Defaults to apiKey + ".desc"
-  descriptionKey?: string;
-  social?: TranslationKeyWithProperties[];
-  obtain: TranslationKeyWithProperties[];
-  risks: TranslationKeyWithProperties[];
-}
-
-export interface TranslationKeyWithProperties {
-  key: string;
-  properties?: { [key: string]: string };
-}
-
-export const SOCIAL_KEY_DISCORD = "social.key.discord";
-export const SOCIAL_KEY_TELEGRAM = "social.key.telegram";
-export const SOCIAL_KEY_TWITTER = "social.key.twitter";
-
-export const OBTAIN_KEY_ONETOKEN_POOL = "obtain.pool.onetoken";
-export const OBTAIN_KEY_TWOTOKEN_POOL = "obtain.pool.twotoken";
-export const OBTAIN_KEY_MULTITOKEN_POOL = "obtain.pool.multitoken";
-export const OBTAIN_KEY_ZAPPER = "obtain.pool.zapper";
-
-export const RISK_SMART_CONTRACT = "risk.smart.contract";
-export const RISK_MAINTAIN_PEG = "risk.maintain.peg";
-export const RISK_PROTOCOL = "risk.protocol";
+import { AssetDocumentationDefinition, OBTAIN_KEY_TWOTOKEN_POOL, OBTAIN_KEY_MULTITOKEN_POOL, OBTAIN_KEY_ONETOKEN_POOL, AssetDocumentationResult } from "./DocsInterfaces";
 
 export function documentationAssetDefinitionToResult(
   language: string,

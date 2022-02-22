@@ -1,42 +1,31 @@
 import { PickleAsset } from "../model/PickleModelJson";
-import {
-  AssetDocumentationDefinition,
-  documentationAssetDefinitionToResult,
-} from "./documentationImplementation";
-import { ALL_JAR_DOCUMENTATION } from "./docs";
+import { CUSTOM_JAR_DOCUMENTATION } from "./docs";
+import { AssetDocumentationDefinition, AssetDocumentationResult, DocsFormat, DocumentationModelResult } from "./DocsInterfaces";
+import { documentationAssetDefinitionToResult } from "./documentationImplementation";
 
-export interface DocumentationModelResult {
-  [key: string]: AssetDocumentationResult;
+export const getAllJarDocumentationDefinitions = (): AssetDocumentationDefinition[] => {
+  let ret: AssetDocumentationDefinition[] = [];
+  ret = ret.concat(CUSTOM_JAR_DOCUMENTATION);
+  // TODO add automatic ones
+  return ret;
 }
 
-export interface AssetDocumentationResult {
-  // Defaults to apiKey + ".desc"
-  apiKey: string;
-  description: string;
-  social?: string[];
-  obtain: string[];
-  risks: string[];
-}
-
-export enum DocsFormat {
-  HTML = "html",
-  MD = "markdown",
-  PLAIN = "plain",
-}
 
 export class DocsManager {
+
   public static getDocumentationForAllAssets(
     language: string,
     linkType: DocsFormat,
   ): DocumentationModelResult {
     const result: DocumentationModelResult = {};
-    for (let i = 0; i < ALL_JAR_DOCUMENTATION.length; i++) {
+    const allDefs: AssetDocumentationDefinition[] = getAllJarDocumentationDefinitions();
+    for (let i = 0; i < allDefs.length; i++) {
       const d = DocsManager.getDocumentationForAssetId(
-        ALL_JAR_DOCUMENTATION[i].apiKey,
+        allDefs[i].apiKey,
         language,
         linkType,
       );
-      result[ALL_JAR_DOCUMENTATION[i].apiKey] = d;
+      result[allDefs[i].apiKey] = d;
     }
     return result;
   }
@@ -58,7 +47,7 @@ export class DocsManager {
     linkType: DocsFormat,
   ): AssetDocumentationResult {
     const docItem: AssetDocumentationDefinition | undefined =
-      ALL_JAR_DOCUMENTATION.find(
+      getAllJarDocumentationDefinitions().find(
         (x) => x.apiKey.toLowerCase() === assetId.toLowerCase(),
       );
     if (!docItem) {
