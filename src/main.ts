@@ -8,10 +8,11 @@ import fs from "fs";
 // This is an example of the code you'd want to run in a client
 async function generateFullApi() {
   const map: Map<ChainNetwork, Provider | Signer> = new Map();
-  map.set(ChainNetwork.Ethereum, new ethers.providers.InfuraProvider());
+  map.set(ChainNetwork.Ethereum, new ethers.providers.InfuraProvider("homestead", "bffa5db7ec694b1a9bcf3f5b18cf36c3"));
   map.set(
     ChainNetwork.Polygon,
-    new ethers.providers.JsonRpcProvider("https://polygon-rpc.com/"),
+    //https://rpc.ankr.com/iotex
+    new ethers.providers.JsonRpcProvider("https://rpc.ankr.com/iotex"),
   );
 
   const model: PickleModel = new PickleModel(ALL_ASSETS, map);

@@ -65,7 +65,7 @@ export async function calculatePolySushiAPY(
   const provider = model.providerFor(jar.chain);
   const totalAllocPointCREncoded = await provider.getStorageAt(
     MATIC_COMPLEX_REWARDER,
-    5,
+    5
   );
   const [poolInfoCR, maticPerSecondBN] = await multicallProvider.all([
     new MulticallContract(

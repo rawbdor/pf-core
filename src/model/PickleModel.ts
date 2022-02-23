@@ -431,7 +431,8 @@ export class PickleModel {
   initializeChains(chains: Map<ChainNetwork, Provider | Signer>) {
     const allChains: ChainNetwork[] = Chains.list();
     Chains.globalInitialize(chains);
-    this.configuredChains = allChains;
+    const runs = [ChainNetwork.Ethereum, ChainNetwork.Arbitrum,ChainNetwork.Aurora, ChainNetwork.OKEx, ChainNetwork.Metis, ChainNetwork.Cronos, ChainNetwork.Harmony,ChainNetwork.Optimism];
+    this.configuredChains = [ChainNetwork.Polygon];//allChains;
   }
 
   async ensurePriceCacheLoaded(): Promise<any> {
@@ -626,7 +627,7 @@ export class PickleModel {
     const jarBehaviorResolver = new JarBehaviorDiscovery();
     const notDisabled: PickleAsset[] = this.allAssets.filter((jar) => {
       return jar.enablement !== AssetEnablement.PERMANENTLY_DISABLED;
-    });
+    }).filter((x) => this.configuredChains.includes(x.chain));
     let prices: number[] = undefined;
     try {
       prices = await Promise.all(
@@ -901,12 +902,12 @@ export class PickleModel {
     }
 
     for (let j = 0; j < harvestableJars.length; j++) {
-      if (results[j]) {
+      if (results && results[j]) {
         results[j].balanceUSD = toThreeDec(results[j].balanceUSD);
         results[j].earnableUSD = toThreeDec(results[j].earnableUSD);
         results[j].harvestableUSD = toThreeDec(results[j].harvestableUSD);
       }
-      harvestableJars[j].details.harvestStats = results[j];
+      harvestableJars[j].details.harvestStats = results ? results[j] : undefined;
     }
   }
 
@@ -1051,6 +1052,10 @@ export class PickleModel {
     jarsWithFarms: JarDefinition[],
     balances: any[],
   ) {
+    if( !balances) {
+      return;
+    }
+
     for (let i = 0; i < jarsWithFarms.length; i++) {
       const ptokenPrice: number =
         jarsWithFarms[i].details.ratio * jarsWithFarms[i].depositToken.price;
@@ -1160,7 +1165,8 @@ export class PickleModel {
   async loadApyComponents() {
     const withBehaviors: PickleAsset[] = this.allAssets.filter(
       (x) => new JarBehaviorDiscovery().findAssetBehavior(x) !== undefined,
-    );
+    ).filter((x) => this.configuredChains.includes(x.chain));
+
     let aprStats: AssetProjectedApr[] = undefined;
     try {
       aprStats = await Promise.all(
